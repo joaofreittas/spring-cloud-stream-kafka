@@ -1,0 +1,31 @@
+spring:
+    cloud:
+        stream:
+            kafka:
+                binder:
+                    brokers: 'localhost:9092'
+                    autoCreateTopics: true
+                    replicationFactor: 1
+                deserializationExceptionHandler: logAndContinue
+                bindings:
+                    my-test-input:
+                        consumer:
+                            startOffset: latest
+                            enableDlq: true
+                            dlqName: my-test-event-DLQ
+                            autoCommitOnError: true
+                            autoCommitOffset: true
+                            configuration:
+                                max.poll.records: 100
+                                max.poll.interval.ms: 1000000
+            bindings:
+                my-test-input:
+                    destination: my-test-topic
+                    contenty-type: application/json
+                    group: my-test-group
+                    consumer:
+                        maxAttempts: 1
+                        concurrency: 5
+                my-test-output:
+                    destination: my-test-topic
+                    contenty-type: application/json
